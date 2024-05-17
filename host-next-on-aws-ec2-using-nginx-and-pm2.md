@@ -220,3 +220,187 @@ pm2 save
 
 Now, PM2 will restart your applications after a system reboot.
 
+Ewooral: 
+ubuntu@ip-172-31-42-215:~/auto-sms$ git remote add origin git@github.com:Ewooral/auto-sms-aws-ec2.git
+git remote add origin git@github.com:Ewooral/auto-sms-aws-ec2.git
+git branch -M main
+git push -u origin main
+error: remote origin already exists.
+error: remote origin already exists.
+git@github.com: Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+
+GitHub Copilot: The error messages indicate two issues:
+
+1. The remote `origin` already exists. You can't add a new remote with the same name as an existing one.
+2. The SSH public key authentication failed. This usually means either the public key is not added to your GitHub account or the private key is not available to the Git client.
+
+Here's how to resolve these issues:
+
+**Issue 1: Remote `origin` already exists**
+
+If you want to replace the existing remote `origin`, you can either remove the existing one first or use the `set-url` command to change the URL of the existing remote.
+
+Remove the existing remote `origin`:
+
+```bash
+git remote remove origin
+```
+
+Then, add the new remote `origin`:
+
+```bash
+git remote add origin git@github.com:Ewooral/auto-sms-aws-ec2.git
+```
+
+Or, change the URL of the existing remote `origin`:
+
+```bash
+git remote set-url origin git@github.com:Ewooral/auto-sms-aws-ec2.git
+```
+
+**Issue 2: SSH public key authentication failed**
+
+Make sure you have a SSH key pair on your EC2 instance. If not, generate a new one:
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+
+This will generate a new SSH key pair. The public key will be in a file named `~/.ssh/id_rsa.pub`.
+
+Add the content of the `~/.ssh/id_rsa.pub` file to your GitHub account:
+
+1. Open the `~/.ssh/id_rsa.pub` file and copy its content.
+2. Go to your GitHub account settings.
+3. Click on "SSH and GPG keys".
+4. Click on "New SSH key".
+5. Paste the copied content into the "Key" field and give it a title.
+6. Click on "Add SSH key".
+
+Now, you should be able to push to your GitHub repository.
+
+Ewooral: still getting the below
+git push -u origin main
+git@github.com: Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+
+
+GitHub Copilot: The error message indicates that the SSH key authentication is still failing. Here are a few things you can check:
+
+1. **SSH Agent:** Ensure that the ssh-agent is running and your key is added to it. You can do this with the following commands:
+
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+```
+
+2. **Correct Key:** Make sure you're using the correct private key. If you have multiple keys, you might need to specify which one to use. You can do this by creating or modifying a file named `config` in your `~/.ssh` directory. The content of the file should be:
+
+```bash
+Host github.com
+  IdentityFile ~/.ssh/id_rsa
+```
+
+Replace `~/.ssh/id_rsa` with the path to your private key if it's different.
+
+3. **GitHub Settings:** Double-check that your public key is correctly added to your GitHub account. It should be added in the [SSH and GPG keys section](https://github.com/settings/keys) of your GitHub account settings.
+
+4. **SSH Connection:** You can check your SSH connection to GitHub by running the following command:
+
+```bash
+ssh -T git@github
+
+.com
+
+
+```
+
+You should see a message like "Hi username! You've successfully authenticated...". If you see the permission denied message again, there's likely an issue with your SSH key setup.
+
+5. **Repository Access:** Make sure you have access to the repository. If the repository is private, you need to be added as a collaborator or be a member of a team that has access to the repository.
+
+Ewooral: eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+Agent pid 11899
+/home/ubuntu/.ssh/id_rsa: No such file or directory
+
+GitHub Copilot: The error message indicates that the SSH private key file (`~/.ssh/id_rsa`) does not exist in the specified directory. This could mean that the SSH key pair was not generated or it was saved with a different name or in a different location.
+
+You can generate a new SSH key pair with the following command:
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+
+When you're asked to "Enter a file in which to save the key," press Enter. This accepts the default file location and name (`~/.ssh/id_rsa`).
+
+After the key pair is generated, you can add the private key to the ssh-agent:
+
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+```
+
+Then, you need to add the public key to your GitHub account:
+
+1. Display the public key with the following command:
+
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+
+2. Copy the displayed key.
+
+3. Go to your GitHub account settings.
+
+4. Click on "SSH and GPG keys".
+
+5. Click on "New SSH key".
+
+6. Paste the copied key into the "Key" field and give it a title.
+
+7. Click on "Add SSH key".
+
+Now, you should be able to push to your GitHub repository.
+
+Ewooral: when i was asked to enter file name i entered ewooral which created two files, ewooral and ewooral.pub
+
+GitHub Copilot: If you named your SSH key "ewooral", then your private key is named "ewooral" and your public key is named "ewooral.pub". You need to use these names when adding the private key to the ssh-agent and when adding the public key to your GitHub account.
+
+Here's how you can do it:
+
+1. Add the private key to the ssh-agent:
+
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/ewooral
+```
+
+2. Add the public key to your GitHub account:
+
+- Display the public key with the following command:
+
+```bash
+cat ~/.ssh/ewooral.pub
+```
+
+- Copy the displayed key.
+
+- Go to your GitHub account settings.
+
+- Click on "SSH and GPG keys".
+
+- Click on "New SSH key".
+
+- Paste the copied key into the "Key" field and give it a title.
+
+- Click on "Add SSH key".
+
+Now, you should be able to push to your GitHub repository.
